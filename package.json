@@ -1,0 +1,20 @@
+{
+  "name": "nolib",
+  "version": "1.0.0",
+  "description": "Making a project without any external library for client and server side",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd server && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osSidd/noLib.git"
+  },
+  "author": "osSidd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osSidd/noLib/issues"
+  },
+  "homepage": "https://github.com/osSidd/noLib#readme"
+}
