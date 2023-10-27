@@ -7,7 +7,7 @@ class LiteServer extends Methods{
        super()
        //core function bindings
        this.createServer = this.createServer.bind(this)
-       this.responseMethod = this.responseMethod.bind(this)
+       this.matchRouteMethod = this.matchRouteMethod.bind(this)
        this.listen = this.listen.bind(this)
     }
 
@@ -17,23 +17,25 @@ class LiteServer extends Methods{
 
             if(req.url !== '/favicon.ico'){
 
-                const routes = this.responseMethod(req.url, req.method)
-
+                const callbacks = this.matchRouteMethod(req.url, req.method)
+                
+                callbacks.forEach(cb => {
+                    cb(req, res)
+                })
                 // this.cbArray.forEach(obj => {
                 //     obj?.cb(req, res)
                 // })
 
-                routes.forEach(route => {
-                    route.cb(req, res)
-                })
+                // routes.forEach(route => {
+                //     route.cb(req, res)
+                // })
             }
         })
     }
 
     //finds the appropriate callback functions to handle request
-   responseMethod(url, method){
-        const route = this.serverRouter[method.toLowerCase()].filter(route => route.endpoint === url || route.endpoint === '*')
-        return route
+    matchRouteMethod(url, method){
+        return this.responder[url][method]
     }   
     
     //start to listen for request

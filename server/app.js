@@ -1,24 +1,16 @@
 const server = require('./modules/liteServer')
 
-const indexRouter = require('./routes/index')
+// const indexRouter = require('./routes/index')
 const app = new server()
 
-app.all('/', (req, res) => {
-    console.log('for all methods')
-})
+app.get('/', (req, res) => {console.log(req.method, req.url)}, (req, res) => {res.end('Hala Madrid!')})
+app.all('/', (req,res) => {console.log('all cb 1')}, (req,res) => {console.log('all cb 2')})
+app.post('/', (req,res) => {console.log('from', req.method)}, (req,res) => {res.end('From post')})
+app.put('/', (req,res) => {console.log('from', req.method)}, (req,res) => {res.end('From put')})
 
-app.use((req, res) => {
-    console.log('called for every method and verb')
-})
 
-app.get('/', (req, res) => {
-    res.end('hi there')
-})
-
-app.delete('/', (req, res) => {
-    res.end('delete')
-})
-
-// app.use('/api', indexRouter)
+// app.post('/', (req, res) => {
+//     res.end('hala madrid')
+// })
 
 module.exports = app
