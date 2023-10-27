@@ -16,26 +16,30 @@ class LiteServer extends Methods{
        return http.createServer((req,res) => {
 
             if(req.url !== '/favicon.ico'){
-
-                const callbacks = this.matchRouteMethod(req.url, req.method)
-                
-                callbacks.forEach(cb => {
-                    cb(req, res)
-                })
-                // this.cbArray.forEach(obj => {
-                //     obj?.cb(req, res)
-                // })
-
-                // routes.forEach(route => {
-                //     route.cb(req, res)
-                // })
+                this.callUse(req, res)
+                this.callAll(req, res)
+                this.matchRouteMethod(req, res)
             }
         })
     }
 
-    //finds the appropriate callback functions to handle request
-    matchRouteMethod(url, method){
-        return this.responder[url][method]
+    call(req, res, args){
+        args.forEach(cb => {
+            cb(req, res)
+        })
+    }
+
+    callAll(req, res){
+        req.url in this.responder.all && this.call(req, res, this.responder.all[req.url])
+    }
+
+    callUse(req, res){
+        this.call(req, res, this.responder.use)
+    }
+
+    matchRouteMethod(req, res){
+        const args = this.responder[req.url]?.[req.method] ? this.responder[req.url][req.method] : null
+        if(args) this.call(req, res, args)
     }   
     
     //start to listen for request
