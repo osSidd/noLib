@@ -57,35 +57,22 @@ class MyServer{
  addRoute(endpoint, ...args){
     this.obj[endpoint] = endpoint in this.obj 
  }
-
-//  const promiseA = new Promise((send, rej) => {})
-    
-//  promiseA.then(data => res.end(`id is ${data}`))
-
-async middleware(req, res){
-  console.log(req.method, req.url);
-
-    const response = await fetch('https://catfact.ninja/fact')
-    const data = await response.json()
-        
-    res.end(data.fact);
-}
  
  createServer(){
   const server = http.createServer()
   server.on('request', (req, res) => {
 
-    // this.obj[req.url][req.method].forEach(cb => {
-    //          cb(req, res)
-    //      })
-
-    const myPromise = new Promise((resolve, reject) => {
-      resolve(this.middleware)
-    })
-
-    myPromise.then(mdwr => mdwr(req, res))
-
+    const myPromise = this.obj[req.url] ?  Promise.resolve(this.obj[req.url][req.method][0]) : Promise.reject('404 error')
+    
+    myPromise
+      .then(mdwr => mdwr(req, res))
+      .catch(err => {console.log(err); res.end(err)})
   })
+
+  server.on('error', (err) => {
+      console.log(err)
+  })
+
   return server
  }
 
@@ -95,6 +82,18 @@ async middleware(req, res){
 }
 
 const app = new MyServer()
+
+app.get('/cats', async (req, res) => {
+  console.log(req.method, req.url);
+  try{
+    const response = await fetch('https://catfact.ninja/fact')
+    const data = await response.json()
+      
+    res.end(data.fact);
+  }catch(err){
+    res.end(err.message)
+  }
+})
 
 app.listen(3000, 'localhost', () => {console.log('server running')})
 
