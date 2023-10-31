@@ -9,19 +9,22 @@ class LiteServer extends Methods{
        this.createServer = this.createServer.bind(this)
        this.matchRouteMethod = this.matchRouteMethod.bind(this)
        this.listen = this.listen.bind(this)
+       LiteServer.createServer()
     }
 
     //creates the server
-    createServer(){
-       return http.createServer((req,res) => {
-
-            if(req.url !== '/favicon.ico'){
-                this.callUse(req, res)
-                this.callAll(req, res)
-                this.matchRouteMethod(req, res)
-            }
-        })
+    static createServer(){
+       const server = http.createServer()
+       server.on('request', this.requestListener)
+       server.on('listening', 3000, 'localhost', () => {console.log('listening on port 3000')})
     }
+
+    requestListener(req, res){
+        console.log(req.method, req.url)
+        res.end("Hi there")
+    }
+
+
 
     call(req, res, args){
         args.forEach(cb => {
